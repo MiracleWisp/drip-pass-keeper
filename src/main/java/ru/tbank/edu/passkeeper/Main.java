@@ -8,6 +8,7 @@ import ru.tbank.edu.passkeeper.service.CommandExecutor;
 import ru.tbank.edu.passkeeper.service.SecretService;
 import ru.tbank.edu.passkeeper.service.command.AddCommand;
 import ru.tbank.edu.passkeeper.service.command.DeleteCommand;
+import ru.tbank.edu.passkeeper.service.command.HelpCommand;
 import ru.tbank.edu.passkeeper.service.command.LoadCommand;
 import ru.tbank.edu.passkeeper.service.command.SaveCommand;
 import ru.tbank.edu.passkeeper.service.command.ShowCommand;
@@ -35,13 +36,18 @@ public class Main {
         );
         var fileService = new FileService(converterProvider, secretRepository);
         var secretService = new SecretService(secretRepository, validators);
-        var executor = new CommandExecutor(Map.of(
-            "add", new AddCommand(secretService),
-            "delete", new DeleteCommand(secretService),
-            "show", new ShowCommand(secretService),
-            "load", new LoadCommand(fileService),
-            "save", new SaveCommand(fileService)
-        ));
+        var helpCommand = new HelpCommand();
+        var executor = new CommandExecutor(
+            Map.of(
+                "add", new AddCommand(secretService),
+                "delete", new DeleteCommand(secretService),
+                "show", new ShowCommand(secretService),
+                "load", new LoadCommand(fileService),
+                "save", new SaveCommand(fileService),
+                "help", helpCommand
+            ),
+            helpCommand
+        );
         var application = new Application(executor);
         application.run();
     }
